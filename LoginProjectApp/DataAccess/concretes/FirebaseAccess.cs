@@ -1,12 +1,10 @@
 ﻿using LoginProjectApp.DataAccess.abstracts;
-using LoginProjectApp.ViewModel;
+using LoginProjectApp.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Google.Cloud.Firestore;
-using System.IO;
-using Microsoft.AspNetCore.Authorization;
+
 
 namespace LoginProjectApp.DataAccess.concretes
 {
@@ -136,6 +134,41 @@ namespace LoginProjectApp.DataAccess.concretes
 
         }
 
-       
+        public async Task<bool> CheckEmail(string email)
+        {
+            FirebaseConnect();
+
+            FirestoreDb db = FirestoreDb.Create("loginproject-319714");
+
+            if (db != null)
+            {
+                Console.WriteLine("bağlantı başarılı");
+            }
+            else
+            {
+                Console.WriteLine("bağlantı başarısız");
+            }
+
+            CollectionReference usersRef = db.Collection("login");
+            Query query = usersRef
+                .WhereEqualTo("Email", email);
+
+            QuerySnapshot querySnapshot = await query.GetSnapshotAsync();
+
+            if(querySnapshot.Count == 1)
+            {
+                //veritabanında vardır.
+                Console.WriteLine("email değeri veritabanında vardır");
+                return true;
+            }
+            else
+            {
+                //veritabanında yoktur.
+                Console.WriteLine("email değeri veritabanında yoktur");
+                return false;
+            }
+
+        }
+
     }
 }

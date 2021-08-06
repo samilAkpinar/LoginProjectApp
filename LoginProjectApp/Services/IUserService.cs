@@ -1,4 +1,4 @@
-﻿using LoginProjectApp.ViewModel;
+﻿using LoginProjectApp.Models;
 using LoginProjectApp.Helpers;
 using System;
 using Microsoft.Extensions.Options;
@@ -14,7 +14,8 @@ namespace LoginProjectApp.Services
     {
         void AddUser(string email, string password);
         User Authenticate(string email, string password);
-        
+        bool ForgottenPassword(string email);
+
     }
 
     public class UserService : IUserService
@@ -78,6 +79,14 @@ namespace LoginProjectApp.Services
             user.Password = null;
 
             return user;
+        }
+
+
+        public bool ForgottenPassword(string email)
+        {
+            var state = _firebaseAccess.CheckEmail(email).Result;
+
+            return state;
         }
 
         
